@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <!-- <router-view /> -->
-    <homework :total="299" :current-page="current" @changePage="getNewPage" />
+    <homework :total="50" :num="5" @preDate="preDate" @nextDate="nextDate" @pageChange="request" />
     <!-- <homework :total="50" :num="5" @preDate="preDate" @nextDate="nextDate" /> -->
   </div>
 </template>
@@ -15,12 +15,18 @@ export default {
   },
   data() {
     return {
-      current: 1
+      page: 1
     }
   },
   methods: {
-    getNewPage(val) {
-      this.current = val
+    preDate() {
+      console.log('上一页数据')
+    },
+    nextDate() {
+      console.log('下一页数据')
+    },
+    request(page) {
+      console.log('发送请求', page)
     }
   }
 }
