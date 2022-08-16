@@ -27,7 +27,6 @@
               </span>
             </el-col>
             <el-col :span="15">
-
               <el-input v-model="loginForm.code" placeholder="请输入验证码" />
             </el-col>
             <el-col :span="7">
