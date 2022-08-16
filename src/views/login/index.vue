@@ -54,7 +54,7 @@ export default {
         loginName: 'admin',
         password: 'admin',
         code: '',
-        num: ''
+        clientToken: ''
       },
       rules: {
         loginName: [{ required: true, trigger: 'blur', message: '请输入账号' }],
@@ -97,7 +97,7 @@ export default {
       const num = Math.random() * 100
       this.src = this.getcode(num)
       console.log(this.src)
-      this.loginForm.num = num
+      this.loginForm.clientToken = num
     }
   }
 }
