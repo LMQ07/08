@@ -31,7 +31,7 @@
               <el-input v-model="loginForm.code" placeholder="请输入验证码" />
             </el-col>
             <el-col :span="7">
-              <img :src="getcode()" alt="">
+              <img :src="src" alt="" @click="changeSrc">
             </el-col>
           </el-row>
         </el-form-item>
@@ -53,7 +53,8 @@ export default {
       loginForm: {
         loginName: 'admin',
         password: 'admin',
-        code: ''
+        code: '',
+        num: ''
       },
       rules: {
         loginName: [{ required: true, trigger: 'blur', message: '请输入账号' }],
@@ -63,10 +64,13 @@ export default {
         code: [{ required: true, trigger: 'blur', message: '请输入验证码' }]
       },
       pwd: 'password',
-      loading: false
+      loading: false,
+      src: ''
+
     }
   },
-  watch: {
+  mounted() {
+    this.changeSrc()
   },
   methods: {
     changePwdType() {
@@ -87,6 +91,13 @@ export default {
       } finally {
         this.loading = false
       }
+    },
+    // 更新验证码
+    changeSrc() {
+      const num = Math.random() * 100
+      this.src = this.getcode(num)
+      console.log(this.src)
+      this.loginForm.num = num
     }
   }
 }

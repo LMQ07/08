@@ -1,7 +1,6 @@
 import request from '@/utils/request'
 // 这个数字后面登录还需要用到
-const num = Math.random() * 100
-export function getcode() {
+export function getcode(num) {
   const url = `/api/user-service/user/imageCode/${num}`
   return url
 }
@@ -12,7 +11,6 @@ export function login(data) {
     method: 'POST',
     data: {
       ...data,
-      clientToken: num,
       loginType: 0
     }
   })
