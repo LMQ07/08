@@ -1,24 +1,93 @@
 <template>
   <div class="login-container">
     <div class="formBox">
-      <el-form ref="loginForm" class="login-form" auto-complete="on" label-position="left">
+      <el-form ref="loginForm" :model="loginForm" :rules="rules" class="login-form" label-position="left">
+        <!-- logo -->
         <img src="@/assets/images/logo.png" alt="" class="logo">
-        <el-button type="primary" class="btn">登录</el-button>
+        <el-form-item prop="loginName">
+          <span>
+            <svg-icon icon-class="shouji" />
+          </span>
+          <el-input v-model="loginForm.loginName" placeholder="请输入账号" />
+        </el-form-item>
+        <el-form-item prop="password">
+          <span>
+            <svg-icon icon-class="RectangleCopy" />
+          </span>
+          <el-input ref="pwd" v-model="loginForm.password" :type="pwd" placeholder="请输入密码" />
+          <span>
+            <svg-icon :icon-class="pwd === 'password' ? 'eye' : 'eye-open'" @click="changePwdType" />
+          </span>
+        </el-form-item>
+        <el-form-item prop="code">
+          <el-row type="flex">
+            <el-col :span="2">
+              <span>
+                <svg-icon icon-class="dunpaibaoxianrenzheng_o" />
+              </span>
+            </el-col>
+            <el-col :span="15">
 
+              <el-input v-model="loginForm.code" placeholder="请输入验证码" />
+            </el-col>
+            <el-col :span="7">
+              <img :src="getcode()" alt="">
+            </el-col>
+          </el-row>
+        </el-form-item>
+        <!-- 登录按钮 -->
+        <el-button :loading="loading" type="primary" class="btn" @click="login">登录</el-button>
       </el-form>
     </div>
   </div>
 </template>
 
 <script>
+import { getcode } from '@/api/user'
 
 export default {
   name: 'Login',
   data() {
+    return {
+      getcode,
+      loginForm: {
+        loginName: 'admin',
+        password: 'admin',
+        code: ''
+      },
+      rules: {
+        loginName: [{ required: true, trigger: 'blur', message: '请输入账号' }],
+        password: [{ required: true, trigger: 'blur', message: '请输入密码' }, {
+          max: 16, min: 5, trigger: 'blur', message: '密码必须在5-16位'
+        }],
+        code: [{ required: true, trigger: 'blur', message: '请输入验证码' }]
+      },
+      pwd: 'password',
+      loading: false
+    }
   },
   watch: {
   },
   methods: {
+    changePwdType() {
+      this.pwd === 'password' ? this.pwd = '' : this.pwd = 'password'
+      this.$nextTick(() => { this.$refs.pwd.focus() })
+    },
+    async login() {
+      try {
+        // 第一步验证通过 发起请求
+        await this.$refs.loginForm.validate()
+        this.loading = true
+        // 发起请求
+        await this.$store.dispatch('user/getToken', this.loginForm)
+        // 请求成功
+        this.$router.push('/')
+      } catch (e) {
+        return
+      } finally {
+        this.loading = false
+      }
+    }
   }
 }
 </script>
@@ -28,8 +97,8 @@ export default {
 /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
 
 $bg:#283443;
-$light_gray:#fff;
-$cursor: #fff;
+$light_gray:grey;
+$cursor: grey;
 
 @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
   .login-container .el-input input {
@@ -62,10 +131,26 @@ $cursor: #fff;
   }
 
   .el-form-item {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-    color: #454545;
+    width: 100%;
+    height: 52px;
+    margin-bottom: 24px;
+    background: #fff;
+    border: 1px solid #e2e2e2;
+    border-radius: 4px;
+    span{
+    padding: 6px 5px 6px 15px;
+    color: #889aa4;
+    vertical-align: middle;
+    width: 30px;
+    display: inline-block;
+    font-size: 16px;
+    }
+  }
+  .el-row{
+    line-height: 0;
+  }
+  .el-col-2{
+    line-height: 40px;
   }
 }
 </style>
