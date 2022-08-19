@@ -10,16 +10,16 @@
   .sidebar-container {
     transition: width 0.28s;
     width: $sideBarWidth !important;
-    background-color: $menuBg;
+    background-color: #fff;
     height: 100%;
-    position: fixed;
+    position: absolute;
     font-size: 0px;
     top: 0;
     bottom: 0;
     left: 0;
     z-index: 1001;
     overflow: hidden;
-    margin-top: 60px;
+    top: 60px;
 
     // reset element-ui css
     .horizontal-collapse-transition {
@@ -85,6 +85,7 @@
     & .el-submenu .el-menu-item {
       min-width: $sideBarWidth !important;
       background-color: $subMenuBg !important;
+      
 
       &:hover {
         background-color: $subMenuHover !important;

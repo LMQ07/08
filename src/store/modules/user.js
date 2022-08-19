@@ -4,7 +4,8 @@ export default {
   namespaced: true,
   state: {
     token: getToken(),
-    userInfo: JSON.parse(localStorage.getItem('userInfo'))
+    userInfo: JSON.parse(localStorage.getItem('userInfo')),
+    beginTime: localStorage.getItem('beginTime')
   },
   mutations: {
     pushToken(state, token) {
@@ -22,6 +23,10 @@ export default {
     clearUserInfo(state) {
       localStorage.removeItem('userInfo')
       state.userInfo = {}
+    },
+    setBeginTime(state, time) {
+      state.beginTime = time
+      localStorage.setItem('beginTime', time)
     }
   },
   actions: {
@@ -31,6 +36,7 @@ export default {
       console.log(res)
       commit('pushToken', res.data.token)
       commit('setUserInfo', res.data)
+      commit('setBeginTime', Date.now())
     },
     // 退出登录
     logout({ commit }) {
