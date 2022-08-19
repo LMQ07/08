@@ -1,11 +1,23 @@
 <template>
   <div class="navbar">
-    <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
+    <!-- <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" /> -->
 
-    <breadcrumb class="breadcrumb-container" />
-
+    <!-- <breadcrumb class="breadcrumb-container" /> -->
+    <div class="logo">
+      <img src="@/assets/images/homeLogo.png" alt="">
+    </div>
     <div class="right-menu">
-      <el-dropdown class="avatar-container" trigger="click">
+      <div class="userImg">
+        <img src="@/assets/images/logo.png" alt="">
+      </div>
+      <div class="userInfo">
+        <span>欢迎您：{{ userName }}</span>
+      </div>
+      <div class="logOut" @click="logout">
+        <span>退出</span>
+        <i class="el-icon-caret-bottom" />
+      </div>
+      <!-- <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
           <i class="el-icon-caret-bottom" />
@@ -26,25 +38,23 @@
             <span style="display:block;">Log Out</span>
           </el-dropdown-item>
         </el-dropdown-menu>
-      </el-dropdown>
+      </el-dropdown> -->
     </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import Breadcrumb from '@/components/Breadcrumb'
-import Hamburger from '@/components/Hamburger'
 
 export default {
   components: {
-    Breadcrumb,
-    Hamburger
+
   },
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar'
+      'avatar',
+      'userName'
     ])
   },
   methods: {
@@ -61,12 +71,22 @@ export default {
 
 <style lang="scss" scoped>
 .navbar {
-  height: 50px;
+  height: 60px;
   overflow: hidden;
   position: relative;
-  background: #fff;
+  // background: #fff;
+  background-color: #5373e0;
   box-shadow: 0 1px 4px rgba(0,21,41,.08);
-
+ .logo{
+  display: inline-block;
+  position: relative;
+  top:4px;
+    img{
+       margin-top: 6px;
+       margin-left: 15px;
+      width:88px
+    }
+ }
   .hamburger-container {
     line-height: 46px;
     height: 100%;
@@ -86,8 +106,29 @@ export default {
 
   .right-menu {
     float: right;
+    display: flex;
+    align-items: center;
     height: 100%;
     line-height: 50px;
+.userImg{
+  width:48px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  img{
+    width:35px
+  }
+}
+.userInfo{
+  font-size: 16px;
+  color: #fff;
+  margin-right: 24px;
+}
+.logOut{
+  font-size: 16px;
+  color: #fff;
+  margin-right: 24px;
+}
 
     &:focus {
       outline: none;

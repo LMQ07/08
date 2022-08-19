@@ -3,7 +3,8 @@ import { getToken, setToken, removeToken } from '@/utils/auth'
 export default {
   namespaced: true,
   state: {
-    token: getToken()
+    token: getToken(),
+    userInfo: JSON.parse(localStorage.getItem('userInfo'))
   },
   mutations: {
     pushToken(state, token) {
@@ -13,14 +14,28 @@ export default {
     clearToken(state) {
       removeToken()
       state.token = ''
+    },
+    setUserInfo(state, userInfo) {
+      state.userInfo = userInfo
+      localStorage.setItem('userInfo', JSON.stringify(userInfo))
+    },
+    clearUserInfo(state) {
+      localStorage.removeItem('userInfo')
+      state.userInfo = {}
     }
   },
   actions: {
     // 发起异步请求并且设置
     async getToken({ commit }, data) {
       const res = await login(data)
-      console.log(res.data.token)
+      console.log(res)
       commit('pushToken', res.data.token)
+      commit('setUserInfo', res.data)
+    },
+    // 退出登录
+    logout({ commit }) {
+      commit('clearToken')
+      commit('clearUserInfo')
     }
   }
 }
