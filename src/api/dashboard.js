@@ -20,3 +20,10 @@ export function getSaleTotal(start, end) {
     url: `order-service/report/regionCollect/${start}/${end}`
   })
 }
+
+// 获取合作商
+export function getTogetherPartner() {
+  return request({
+    url: '/vm-service/node/nodeCollect'
+  })
+}

@@ -1,7 +1,7 @@
 :export {
   menuText: black;
   menuActiveText: #5F84FF;
-  subMenuActiveText: #f4f4f5;
+  subMenuActiveText: black;
   menuBg: #fff;
   menuHover: #fff;
   subMenuBg: #fff;

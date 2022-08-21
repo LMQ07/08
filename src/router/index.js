@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-
+const requireFiles = require.context('@/router/modules', false, /\.js$/)
+const asynvRouter = requireFiles.keys().map(item => requireFiles(item).default || requireFiles(item))
 Vue.use(Router)
 
 /* Layout */
@@ -42,7 +43,6 @@ export const constantRoutes = [
     component: () => import('@/views/404'),
     hidden: true
   },
-
   {
     path: '/',
     component: Layout,
@@ -63,7 +63,8 @@ export const constantRoutes = [
 const createRouter = () => new Router({
   // mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
-  routes: constantRoutes
+  linkActiveClass: 'is-active',
+  routes: [...constantRoutes, ...asynvRouter]
 })
 
 const router = createRouter()

@@ -80,6 +80,7 @@ export default {
   // background: #fff;
   background-color: #5373e0;
   box-shadow: 0 1px 4px rgba(0,21,41,.08);
+  z-index:999;
  .logo{
   display: inline-block;
   position: relative;

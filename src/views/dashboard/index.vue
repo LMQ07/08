@@ -99,15 +99,42 @@
         </el-col>
       </el-row>
     </div>
-    <div class="bottom">12344</div>
+    <div class="bottom">
+      <el-row :gutter="20">
+        <el-col :span="14">
+          <el-card class="common">
+            <div class="header">
+              合作商点位数Top5
+            </div>
+            <div>
+              <el-col :span="17">
+                <echarts :option="partneroption" />
+              </el-col>
+              <el-col :span="7">1323434</el-col>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="10">
+          <el-card class="common">
+            <div class="header">
+              <span>异常设备监控</span>
+            </div>
+            <div class="main">
+              <img src="@/assets/images/404.png" alt="">
+              <span>暂无数据</span>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+    </div>
   </div>
 </template>
 
 <script>
 // import { mapGetters } from 'vuex'
-import { getBussinessTop, getSaleNumWeek, getSaleTotal } from '@/api/dashboard'
+import { getBussinessTop, getSaleNumWeek, getSaleTotal, getTogetherPartner } from '@/api/dashboard'
 import echarts from './components/echarts.vue'
-// import { getUserInfo } from '@/api/user'
+import { getUserInfo } from '@/api/user'
 export default {
   name: 'Dashboard',
   components: { echarts },
@@ -118,7 +145,9 @@ export default {
       saleStartTime: '',
       bussinessTopList: [],
       saleNumoption: {},
-      saleTotaloption: {}
+      saleTotaloption: {},
+      userInfo: {},
+      partneroption: {}
     }
   },
   mounted() {
@@ -126,6 +155,8 @@ export default {
     this.getTopBussiness()
     this.getSaleNumWeek()
     this.getSaleTotal()
+    this.getUserInfo()
+    this.getPartner()
   },
   methods: {
     fixZero(m) {
@@ -145,6 +176,11 @@ export default {
       console.log(this.$store.getters.userId)
       // 请求来的数据
       // console.log(await getUserInfo(this.$store.getters.userId))
+    },
+    async getUserInfo() {
+      const res = await getUserInfo(this.$store.getters.userId)
+      this.userInfo = res.data
+      console.log(this.userInfo)
     },
     // 获取销售数据趋势图
     async getSaleNumWeek() {
@@ -198,6 +234,35 @@ export default {
         ]
       }
       this.saleTotaloption = option
+    },
+    // 获取合作商
+    async getPartner() {
+      const res = await getTogetherPartner()
+      console.log('partner', res.data)
+      const date = res.data.map(item => { return { name: item['name'], value: item['value'] } })
+      console.log(date)
+      const option = {
+        legend: {
+          top: 'bottom'
+        },
+        toolbox: {
+          show: true
+        },
+        series: [
+          {
+            name: 'Nightingale Chart',
+            type: 'pie',
+            radius: [50, 100],
+            center: ['50%', '50%'],
+            roseType: 'area',
+            itemStyle: {
+              borderRadius: 0
+            },
+            data: date
+          }
+        ]
+      }
+      this.partneroption = option
     }
   }
 }
@@ -345,6 +410,28 @@ padding-top: 10px;
        border-radius: 7px;
     }
     }
+    }
+  }
+}
+.bottom{
+  margin-top:15px;
+  .common{
+    border-radius:20px;
+    min-height: 353px;
+    background: #fff;
+    padding: 10px;
+    .header{
+    font-weight: 600;
+    color: #333;
+    font-size: 16px;
+    height: 16px;
+    }
+    .main{
+      display: flex;
+      height: 260px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
   }
 }
