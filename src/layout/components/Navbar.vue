@@ -73,7 +73,10 @@ export default {
 .navbar {
   height: 60px;
   overflow: hidden;
-  position: relative;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
   // background: #fff;
   background-color: #5373e0;
   box-shadow: 0 1px 4px rgba(0,21,41,.08);

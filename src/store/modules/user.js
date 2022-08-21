@@ -27,6 +27,9 @@ export default {
     setBeginTime(state, time) {
       state.beginTime = time
       localStorage.setItem('beginTime', time)
+    },
+    removeBeginTime(state) {
+      localStorage.removeItem('beginTime')
     }
   },
   actions: {
@@ -42,6 +45,7 @@ export default {
     logout({ commit }) {
       commit('clearToken')
       commit('clearUserInfo')
+      commit('removeBeginTime')
     }
   }
 }

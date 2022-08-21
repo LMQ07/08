@@ -15,6 +15,10 @@ export function login(data) {
     }
   })
 }
-export function logout() {
-
+// 获取用户信息
+export function getUserInfo(id) {
+  return request({
+    url: `/user-service/user/${id}`,
+    method: 'get'
+  })
 }

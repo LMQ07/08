@@ -9,10 +9,10 @@
 
   .sidebar-container {
     transition: width 0.28s;
-    width: $sideBarWidth !important;
+    width: 167px !important;
     background-color: #fff;
     height: 100%;
-    position: absolute;
+    position: fixed;
     font-size: 0px;
     top: 0;
     bottom: 0;

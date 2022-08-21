@@ -9,7 +9,7 @@ const service = axios.create({
   timeout: 5000 // request timeout
 })
 // 设置请求超时的时间
-const timeout = 10
+const timeout = 3600
 
 function isTimeOut() {
   return (Date.now() - parseInt(store.getters.beginTime)) / 1000 > timeout
@@ -17,15 +17,18 @@ function isTimeOut() {
 // request interceptor
 service.interceptors.request.use((config) => {
   // console.log(config.url.includes('/login'))
-  if (config.url.includes('/login')) {
+  if (!store.getters.token) {
     return config
   } else {
-    if (isTimeOut) { // 超时
+    if (isTimeOut()) { // 超时
       store.dispatch('user/logout')
       router.push('/login')
       // Message.error('token已失效')
+      return Promise.reject(new Error('token已失效'))
+    } else {
+      config.headers.Authorization = store.getters.token
+      return config
     }
-    return Promise.reject(new Error('token已失效'))
   }
 }
 
@@ -34,11 +37,12 @@ service.interceptors.request.use((config) => {
 // response interceptor
 service.interceptors.response.use(
   (response) => {
-    console.log(response)
-    if (!response.data.success) {
-      Message.error(response.data.msg)
-      return Promise.reject(response.data.msg)
-    }
+    // console.log(response)
+    // if (!response.data.success) {
+    //   console.log(response)
+    //   Message.error(response.data.msg)
+    //   return Promise.reject(response.data.msg)
+    // }
     return response
   }, (error) => {
     Message.error(error.message)
