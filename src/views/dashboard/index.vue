@@ -91,7 +91,7 @@
               <span class="header">商品热榜</span> <span>{{ startTime }}~{{ endTime }}</span>
             </div>
             <el-row v-for="item,index in bussinessTopList" :key="index" class="body">
-              <el-col :span="5"><div class="icon">1</div></el-col>
+              <el-col :span="5"><div class="icon">{{ index+1 }}</div></el-col>
               <el-col :span="13" class="title">{{ item.skuName }}</el-col>
               <el-col :span="6" class="sale">{{ item.count }}单</el-col>
             </el-row>

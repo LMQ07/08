@@ -5,10 +5,10 @@
       <!-- 表单提交 -->
       <el-form :inline="true" :model="searchMsg" class="demo-form-inline" size="medium">
         <el-form-item label="工单编号：">
-          <el-input v-model="searchMsg.taskCode" placeholder="请输入" />
+          <el-input v-model="searchMsg.taskCode" placeholder="请输入" :clearable="true" />
         </el-form-item>
         <el-form-item label="工单状态：">
-          <el-select v-model="searchMsg.status" placeholder="请选择">
+          <el-select v-model="searchMsg.status" placeholder="请选择" clearable>
             <el-option label="待办" value="1" />
             <el-option label="进行" value="2" />
             <el-option label="取消" value="3" />
@@ -16,17 +16,18 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" size="small" icon="el-icon-search">查询</el-button>
+          <el-button type="primary" size="small" icon="el-icon-search" @click="searchByMsg">查询</el-button>
         </el-form-item>
       </el-form>
     </div>
     <!-- main部分 -->
     <div class="body">
       <div class="button">
-        <el-button class="build" type="primary" icon="el-icon-circle-plus-outline" size="medium">新建</el-button>
-        <el-button class="set" type="warning" size="medium">工单配置</el-button>
+        <el-button class="build" type="primary" icon="el-icon-circle-plus-outline" size="medium" @click="newBuildShow= true">新建</el-button>
+        <el-button class="set" type="warning" size="medium" @click="getNum">工单配置</el-button>
       </div>
       <Table
+        v-loading="loading"
         :thead="tableSet"
         :table-date="tableDate"
         :total-count="totalCount"
@@ -34,18 +35,27 @@
         :page-index="pageIndex"
         @changePageIndex="changePageIndex"
       >
-        <span class="detail" style="color: #5f84ff">查看详情</span>
+        <span slot-scope="{row}" class="detail" style="color: #5f84ff" @click="getDetail(row)">查看详情</span>
       </Table>
     </div>
+    <NewBulid :new-build-show="newBuildShow" />
+    <detail :detail-show="detailShow" :current-detail="currentDetail" />
+    <taskSetting :show-setting="showSetting" :num="num" />
   </div>
 </template>
 
 <script>
 import Table from '@/components/Table'
-import { searchById } from '@/api/worktickets'
+import NewBulid from './components/NewBulid.vue'
+import { searchById, getEndNum } from '@/api/worktickets'
+import detail from './components/detail.vue'
+import taskSetting from './components/taskSetting.vue'
 export default {
   components: {
-    Table
+    Table,
+    NewBulid,
+    detail,
+    taskSetting
   },
   data() {
     return {
@@ -86,23 +96,42 @@ export default {
       isRepair: false,
       totalCount: 0,
       totalPage: 0,
-      tableDate: []
+      tableDate: [],
+      newBuildShow: false,
+      loading: false,
+      detailShow: false,
+      currentDetail: {},
+      showSetting: false,
+      num: ''
     }
   },
   mounted() {
-    this.getTableDate()
+    this.getTableDate({
+      pageSize: this.pageSize,
+      pageIndex: this.pageIndex,
+      isRepair: this.isRepair
+    })
   },
   methods: {
-    async getTableDate() {
-      const res = await searchById({
-        pageSize: this.pageSize,
-        pageIndex: this.pageIndex,
-        isRepair: this.isRepair
-      })
-      console.log(res)
-      this.totalCount = res.data.totalCount
-      this.totalPage = res.data.totalPage
-      this.tableDate = res.data.currentPageRecords
+    async getTableDate(obj) {
+      try {
+        this.loading = true
+        const res = await searchById(obj)
+        console.log(res)
+        this.totalCount = res.data.totalCount
+        this.totalPage = res.data.totalPage
+        // 数据处理一下
+        const arr = res.data.currentPageRecords.map((item) => {
+          item.createTime = item.createTime.split('T').join(' ')
+          item.createType = item.createType === 1 ? '手动' : '自动'
+          return item
+        })
+        this.tableDate = arr
+      } catch {
+        this.$message.error('数据请求失败')
+      } finally {
+        this.loading = false
+      }
     },
     changePageIndex(val) {
       if (val === 0) {
@@ -112,6 +141,26 @@ export default {
         this.pageIndex += 1
         this.getTableDate()
       }
+    },
+    async searchByMsg() {
+      this.pageIndex = 1
+      this.getTableDate({
+        pageIndex: this.pageIndex,
+        pageSize: this.pageSize,
+        isRepair: this.isRepair,
+        ...this.searchMsg
+      })
+    },
+    getDetail(detail) {
+      this.detailShow = true
+      console.log(detail)
+      this.currentDetail = detail
+    },
+    async getNum() {
+      this.showSetting = true
+      console.log(await getEndNum())
+      const res = await getEndNum()
+      this.num = res.data
     }
   }
 

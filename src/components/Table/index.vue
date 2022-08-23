@@ -6,6 +6,7 @@
       class="mq-table"
     >
       <el-table-column
+        v-if="isShowIndex"
         type="index"
         label="序号"
       />
@@ -15,21 +16,25 @@
         :prop="item.prop"
         :label="item.label"
       />
-      <el-table-column label="操作">
-        <div class="detail">
-          <slot />
-        </div>
+      <el-table-column v-if="isShowDone" :label="done">
+        <template v-slot="{row}">
+          <div class="detail">
+            <slot :row="row" />
+          </div>
+        </template>
       </el-table-column>
+      <el-table-column
+        v-if="tableDate.length === 0"
+      >暂无数据</el-table-column>
     </el-table>
-
-    <div class="page">
+    <div v-if="tableDate.length !== 0 && isShowPage" class="page">
       <div>
         <span>共{{ totalCount }}条记录</span>
         <span>  第{{ pageIndex }}/{{ totalPage }}页</span>
       </div>
       <div>
         <el-button :disabled="pageIndex===1" size="small" @click="changePage(0)">上一页</el-button>
-        <el-button :disabled="pageIndex===totalPage" size="small" @click="changePage(1)">下一页</el-button>
+        <el-button :disabled="pageIndex==totalPage" size="small" @click="changePage(1)">下一页</el-button>
       </div>
     </div>
   </div>
@@ -40,11 +45,11 @@ export default {
   props: {
     thead: {
       type: Array,
-      default: () => ({})
+      default: () => []
     },
     tableDate: {
       type: Array,
-      default: () => ({})
+      default: () => []
     },
     totalCount: {
       type: [String, Number],
@@ -57,6 +62,22 @@ export default {
     totalPage: {
       type: [String, Number],
       default: 1
+    },
+    isShowDone: {
+      type: Boolean,
+      default: true
+    },
+    isShowPage: {
+      type: Boolean,
+      default: true
+    },
+    isShowIndex: {
+      type: Boolean,
+      default: true
+    },
+    done: {
+      type: String,
+      default: '操作'
     }
   },
   data() {
@@ -101,5 +122,8 @@ export default {
   .el-button{
     background-color: #d5ddf8;
   }
+}
+::v-deep .el-table td {
+  border: none;
 }
 </style>
