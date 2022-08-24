@@ -8,12 +8,13 @@
     <div class="main">
       <Table :is-show-page="false" :is-show-index="false" :done="'补满数量'" :thead="tableHeader" :table-date="tableDate">
         <template v-slot="{row}">
-          <el-input-number v-model="row.num" size="mini" controls-position="right" :min="0" :max="10" />
+          <span v-if="row.currentCapacity === '-'">货道暂无商品</span>
+          <el-input-number v-model="row.currentNum" size="mini" />
         </template>
       </Table>
     </div>
     <div class="button">
-      <el-button>取消</el-button>
+      <el-button @click="handleClose">取消</el-button>
       <el-button type="primary" @click="onSubmit">确认</el-button>
     </div>
   </el-dialog>
@@ -23,6 +24,7 @@
 import Table from '@/components/Table'
 import { getAddGoods } from '@/api/worktickets'
 export default {
+  name: 'AddGoodsList',
   components: {
     Table
   },
@@ -44,7 +46,8 @@ export default {
         { 'label': '当前数量', 'prop': 'currentCapacity' },
         { 'label': '还可添加', 'prop': 'num' }
       ],
-      tableDate: []
+      tableDate: [],
+      detailDate: []
     }
   },
   watch: {
@@ -60,6 +63,7 @@ export default {
     async getGoodList() {
       const res = await getAddGoods(this.innercode)
       console.log(res.data)
+      this.detailDate = res.data
       const arr = res.data.map(item => {
         if (item.sku === null) {
           item.sku = {}
@@ -68,11 +72,21 @@ export default {
           item.maxCapacity = '-'
         } else {
           item.num = item.maxCapacity - item.currentCapacity
+          item.currentNum = item.maxCapacity - item.currentCapacity
         }
         return item
       })
       this.tableDate = arr
       console.log(arr)
+    },
+    changeNum(row) {
+      // console.log(row)
+      // if (row.currentNum < row.num) {
+      //   this.tableDate.foreach(item => { })
+      // }
+    },
+    onSubmit() {
+
     }
   }
 }

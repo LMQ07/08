@@ -80,10 +80,10 @@
           />
         </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer">
+      <div slot="footer" class="dialog-footer">
         <el-button @click="handleClose">取 消</el-button>
         <el-button type="primary" @click="add">确 定</el-button>
-      </span>
+      </div>
     </el-dialog>
     <addGoodsList :innercode="taskeDate.innerCode" :goods-list-show="goodsListShow" @close="getDetails" />
   </div>
@@ -124,6 +124,14 @@ export default {
     handleClose() {
       this.$parent.newBuildShow = false
       this.$refs.form.resetField()
+      this.taskeDate = {
+        createType: 1,
+        innerCode: '',
+        productType: '',
+        desc: '',
+        userId: '',
+        details: ''
+      }
     },
     // 确认按钮
     async add() {
@@ -174,6 +182,10 @@ export default {
   .el-button--primary{
     background: linear-gradient(135deg,#ff9743,#ff5e20)!important;
     border: none;
+  }
+  .dialog-footer{
+    display: flex;
+    padding-left:220px ;
   }
 
 }
